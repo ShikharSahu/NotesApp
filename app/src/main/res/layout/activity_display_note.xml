@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DisplayNote">
+
+
+    <ScrollView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline3Display1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.1" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4Display1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.9" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/titleNoteLayout1Display1"
+            style="@style/MyTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="35"
+            app:helperText="required!"
+            app:helperTextTextColor="@color/red"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4Display1"
+            app:layout_constraintStart_toStartOf="@+id/guideline3Display1"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/titleNoteETDisplay1"
+                style="@style/MyTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="title"
+                android:maxLength="35"
+                android:inputType="text"
+                android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/descriptionNoteLytDisplay1"
+            style="@style/MyTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:counterEnabled="true"
+            app:counterMaxLength="150"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4Display1"
+            app:layout_constraintStart_toStartOf="@+id/guideline3Display1"
+            app:layout_constraintTop_toBottomOf="@+id/titleNoteLayout1Display1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/descriptionNoteEtDisplay1"
+                style="@style/MyTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="description"
+                android:maxLength="150" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/totalTaskNoteLytDisplay1"
+            style="@style/MyTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:endIconCheckable="true"
+            app:endIconMode="clear_text"
+            app:helperText="required!"
+            app:helperTextTextColor="@color/red"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4Display1"
+            app:layout_constraintStart_toStartOf="@+id/guideline5Display1"
+            app:layout_constraintTop_toBottomOf="@+id/hasProgressMatDisplay1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/totalTaskNoteETDisplay1"
+                style="@style/MyTextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="total task"
+                android:inputType="number"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/taskDoneLayoutDisplay1"
+            style="@style/MyTextInputLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:endIconMode="clear_text"
+            app:helperText="required!"
+
+            app:helperTextTextColor="@color/red"
+            app:layout_constraintBottom_toBottomOf="@+id/totalTaskNoteLytDisplay1"
+            app:layout_constraintEnd_toStartOf="@+id/guideline5Display1"
+            app:layout_constraintStart_toStartOf="@+id/guideline3Display1"
+            app:layout_constraintTop_toTopOf="@+id/totalTaskNoteLytDisplay1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/MyTextInputEditText"
+                android:id="@+id/tasksDoneETDisplay1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType = "number"
+                android:maxLines="1"
+                android:hint="tasks done" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline5Display1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/hasProgressMatDisplay1"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="40dp"
+            android:checked="true"
+            android:text="contains parts?"
+            android:textColor="@color/design_default_color_secondary"
+            android:textSize="18sp"
+            app:boxStrokeColor="@color/design_default_color_secondary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/descriptionNoteLytDisplay1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/createNoteButtonDisplay1"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="save changes"
+            android:textColor="@color/design_default_color_secondary"
+            app:cornerRadius="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/totalTaskNoteLytDisplay1"
+            app:strokeColor="@color/design_default_color_secondary" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>

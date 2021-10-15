@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/NoteCardMaterial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:elevation="10dp"
+        app:cardCornerRadius="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/titleNoteCard1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:text="Title"
+                android:textSize="30sp"
+                app:layout_constraintEnd_toStartOf="@+id/workDoneButtonCard1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/DescriptionNoteCard1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:singleLine="true"
+                android:text="Description"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toStartOf="@+id/workDoneButtonCard1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleNoteCard1" />
+
+            <ProgressBar
+                android:id="@+id/progressBarCard1"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="2dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2Card1"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/workDoneCard1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/workDoneCard1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:text="workDone"
+                android:textColorHighlight="@color/design_default_color_secondary"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2Card1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/DescriptionNoteCard1" />
+
+            <!--            <Button-->
+            <!--                android:id="@+id/workDoneButton"-->
+            <!--                style="@android:style/Widget.Button"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:ellipsize="start"-->
+            <!--                android:hapticFeedbackEnabled="true"-->
+            <!--                android:scrollbarSize="1dp"-->
+            <!--                android:text="done"-->
+            <!--                android:textStyle="bold"-->
+            <!--                app:backgroundTint="@color/design_default_color_secondary"-->
+            <!--                app:cornerRadius="5dp"-->
+            <!--                app:iconSize="5dp"-->
+            <!--                -->
+            <!--                app:layout_constraintHorizontal_bias="1.0"-->
+            <!--                app:layout_constraintStart_toStartOf="@+id/guideline2"-->
+            <!--                app:layout_constraintTop_toBottomOf="@+id/titleNote" />-->
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/workDoneButtonCard1"
+                style="@style/Widget.App.Button.IconOnly"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:icon="@drawable/tick_mark"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2Card1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.65" />
+
+            <LinearLayout
+                android:id="@+id/linearLCard1"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2Card1"
+                app:layout_constraintTop_toBottomOf="@+id/workDoneButtonCard1">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/incCard1"
+                    style="@style/Widget.App.Button.IconOnly1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_weight="1"
+                    app:icon="@drawable/ic_baseline_keyboard_arrow_up_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/decCard1"
+                    style="@style/Widget.App.Button.IconOnly1"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="3dp"
+                    android:layout_weight="1"
+                    app:icon="@drawable/ic_baseline_keyboard_arrow_down_24" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>
