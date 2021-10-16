@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.NotesApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">@color/design_default_color_secondary</item>
+        <item name="colorPrimaryVariant">@color/design_default_color_secondary</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -15,21 +15,27 @@
     </style>
 
     <style name="MyTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textColorHint">@color/design_default_color_on_primary</item>
+        <item name="android:textColorHint">@color/design_default_color_secondary</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
-        <item name="boxStrokeColor">@color/edit_text_box_border</item>
         <item name="colorControlActivated">@color/design_default_color_secondary</item>
         <item name="hintTextColor">@color/design_default_color_secondary</item>
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
         <item name="colorPrimary">@color/design_default_color_secondary</item>
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+
 
     </style>
-
-    <style name="MyTextInputEditText" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox.Dense">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textCursorDrawable">@drawable/color_cursor</item>
-    </style>
+<!--<item name="android:textColorHint">@color/design_default_color_secondary</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+        <item name="colorControlActivated">@color/design_default_color_secondary</item>
+        <item name="colorPrimary">@color/design_default_color_secondary</item>-->
+<!--    <style name="MyTextInputEditText" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox.Dense">-->
+<!--&lt;!&ndash;        <item name="android:textColor">@color/black</item>&ndash;&gt;-->
+<!--        <item name="android:textCursorDrawable">@drawable/color_cursor</item>-->
+<!--    </style>-->
     <style name="Widget.App.Button.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -86,5 +92,16 @@
     <style name="TealThemeOverlay">
         <item name="colorOnSurface">@color/design_default_color_secondary</item>
     </style>
+
+    <style name="MyTextInputLayoutMenu" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:textColorHint">@color/design_default_color_secondary</item>
+        <item name="android:paddingStart">5dp</item>
+        <item name="android:paddingEnd">5dp</item>
+        <item name="boxStrokeColor">@color/edit_text_box_border</item>
+        <item name="colorControlActivated">@color/design_default_color_secondary</item>
+        <item name="hintTextColor">@color/design_default_color_secondary</item>
+        <item name="colorPrimary">@color/design_default_color_secondary</item>
+    </style>
+
 
 </resources>

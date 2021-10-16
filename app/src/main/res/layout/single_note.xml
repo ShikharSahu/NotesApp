@@ -23,13 +23,13 @@
                 android:id="@+id/titleNoteCard1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="6dp"
                 android:text="Title"
-                android:textSize="30sp"
+                android:textSize="28sp"
                 app:layout_constraintEnd_toStartOf="@+id/workDoneButtonCard1"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/priorityLabel"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -70,7 +70,7 @@
                 android:layout_marginRight="6dp"
                 android:text="workDone"
                 android:textColorHighlight="@color/design_default_color_secondary"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/guideline2Card1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/DescriptionNoteCard1" />
@@ -144,6 +144,18 @@
                     android:layout_weight="1"
                     app:icon="@drawable/ic_baseline_keyboard_arrow_down_24" />
             </LinearLayout>
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/priorityLabel"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="6dp"
+                app:layout_constraintBottom_toTopOf="@+id/DescriptionNoteCard1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_marginBaseline="3dp"
+                card_view:srcCompat="@drawable/circle_red" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

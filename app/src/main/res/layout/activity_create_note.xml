@@ -51,7 +51,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/titleNoteET"
-                    style="@style/MyTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="title"
@@ -74,7 +73,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/descriptionNoteEt"
-                    style="@style/MyTextInputEditText"
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="description"
@@ -98,7 +97,6 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/totalTaskNoteET"
-                    style="@style/MyTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="total task"
@@ -121,7 +119,6 @@
                 app:layout_constraintTop_toTopOf="@+id/totalTaskNoteLyt">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    style="@style/MyTextInputEditText"
                     android:id="@+id/tasksDoneET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -141,16 +138,35 @@
                 android:id="@+id/hasProgressMat"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="44dp"
                 android:checked="true"
                 android:text="contains parts?"
                 android:textColor="@color/design_default_color_secondary"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 app:boxStrokeColor="@color/design_default_color_secondary"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline5"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionNoteLyt" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textFieldCreate1"
+                style="@style/MyTextInputLayoutMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:hint="priority"
+                app:layout_constraintBaseline_toBaselineOf="@+id/hasProgressMat"
+                app:layout_constraintEnd_toStartOf="@+id/guideline5"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/priorityCreateDropDown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    android:textSize="16sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/createNoteButton"

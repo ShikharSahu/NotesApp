@@ -6,8 +6,19 @@
         android:id="@+id/addNote"
         android:icon="@drawable/plus_add_draw"
         android:title="add new notes"
+        android:iconTint="@color/white"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/sortByDateAdded"
+        android:title="sort by Date Added"
+        android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+        android:iconTint="@color/white"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/sortByPriority"
+        android:title="sort by Priority"
+        android:icon="@drawable/ic_baseline_sort_by_alpha_24"
+        android:iconTint="@color/white"
+        app:showAsAction="never" />
     </menu>
-<!--    <item android:id="@+id/action_settings"-->
-<!--        android:title="@string/action_settings"-->
-<!--        app:showAsAction="never"/>-->
+

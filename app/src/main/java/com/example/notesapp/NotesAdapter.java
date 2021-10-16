@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.text.MessageFormat;
@@ -19,87 +20,70 @@ import java.util.ArrayList;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder>  {
 
-    private ArrayList<Note> localDataSet;
-    private ItemClickListener clickListener;
-    private ConfettiDisplayable confettiDisplayable;
+    private final ArrayList<Note> localDataSet;
+    private final ItemClickListener clickListener;
 
-    /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
-     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private MaterialTextView title, description, workDone;
-        private MaterialButton done;
-        private MaterialButton increment, decrement;
-        private ProgressBar progressBar;
-        private LinearLayout linearLayout;
-//        private ConstraintLayout constraintLayout;
-        private MaterialCardView noteCardView;
+
+        private final MaterialTextView title;
+        private final MaterialTextView description;
+        private final MaterialTextView workDone;
+        private final MaterialButton doneButton;
+        private final MaterialButton increment;
+        private final MaterialButton decrement;
+        private final ProgressBar progressBar;
+        private final LinearLayout linearLayout;
+        private final ShapeableImageView priorityLabel;
+        private final MaterialCardView noteCardView;
+
         public ViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.titleNoteCard1);
             description = view.findViewById(R.id.DescriptionNoteCard1);
             workDone = view.findViewById(R.id.workDoneCard1);
-            done = view.findViewById(R.id.workDoneButtonCard1);
+            doneButton = view.findViewById(R.id.workDoneButtonCard1);
             increment = view.findViewById(R.id.incCard1);
             decrement = view.findViewById(R.id.decCard1);
             progressBar = view.findViewById(R.id.progressBarCard1);
             linearLayout = view.findViewById(R.id.linearLCard1);
             noteCardView = view.findViewById(R.id.NoteCardMaterial);
-//            constraintLayout = view.findViewById(R.id.constraintCard1);
+            priorityLabel = view.findViewById(R.id.priorityLabel);
+
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clickListener.onItemClick (view, getLayoutPosition());
+                    clickListener.onNoteCompleteClick(view, getLayoutPosition());
                 }
             });
+
 
             increment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = getLayoutPosition();
-                    Note currentNote = localDataSet.get(pos);
-                    boolean changesMade = currentNote.incrementTask();
-                    if (changesMade) {
-                        getWorkDone().setText(getWorkDoneMessage(currentNote));
-                        getProgressBar().setProgress(currentNote.tasksDone);
-                    }
-
-                    if(currentNote.hasProgress && currentNote.tasksDone>= currentNote.maxTask){
-                        startTaskDoneEvent();
-                        currentNote.isDone= true;
-                        notifyItemChanged(pos);
-                    }
-
-
+                    clickListener.onIncrementClick(ViewHolder.this, getLayoutPosition());
                 }
             });
+
+//            clickListener.;
             decrement.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = getLayoutPosition();
-                    Note currentNote = localDataSet.get(pos);
-                    if (currentNote.decrementTask())
-                        getWorkDone().setText(getWorkDoneMessage(currentNote));
-                        getProgressBar().setProgress(currentNote.tasksDone);
+                    clickListener.onDecrementClick(ViewHolder.this, getLayoutPosition());
                 }
             });
 
-            done.setOnClickListener(new View.OnClickListener() {
+
+            doneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
-                    int pos = getLayoutPosition();
-                    Note currentNote = localDataSet.get(pos);
-                    if(!currentNote.isDone){
-                        startTaskDoneEvent();
-                        if(currentNote.hasProgress){
-                            currentNote.tasksDone = currentNote.maxTask;
-                        }
-                        currentNote.isDone = true;
-                        notifyItemChanged(pos);
-                    }
+                public void onClick(View v) {
+                    clickListener.onClickDone(ViewHolder.this, getLayoutPosition());
                 }
             });
+
+        }
+
+        public String getWorkDoneMessage(Note note) {
+            return MessageFormat.format("{0}/{1}", note.tasksDone, note.maxTask);
         }
 
         public MaterialTextView getTitle() {
@@ -114,8 +98,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             return workDone;
         }
 
-        public MaterialButton getDone() {
-            return done;
+        public MaterialButton getDoneButton() {
+            return doneButton;
         }
 
         public MaterialButton getIncrement() {
@@ -135,18 +119,19 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         }
 
         public MaterialCardView getNoteCardView() { return noteCardView; }
+
+        public ShapeableImageView getPriorityLabel() {
+            return priorityLabel;
+        }
+
     }
 
-    private String getWorkDoneMessage(Note note) {
-        return MessageFormat.format("{0}/{1}", note.tasksDone, note.maxTask);
-    }
+
 
 
     public NotesAdapter(ItemClickListener itemClickListener, ArrayList<Note> dataSet) {
         localDataSet = dataSet;
         this.clickListener = itemClickListener;
-        this.confettiDisplayable = (ConfettiDisplayable)clickListener;
-
     }
 
     @Override
@@ -155,14 +140,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 .inflate(R.layout.single_note, viewGroup, false);
         return new ViewHolder(view);
     }
-
-    private void startTaskDoneEvent(){
-        // TODO this
-        confettiDisplayable.displayConfetti();
-        //Toast.makeText((AppCompatActivity)clickListener, "task was done", Toast.LENGTH_SHORT).show();
-
-    }
-
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
@@ -183,7 +160,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             viewHolder.getIncrement().setVisibility(View.VISIBLE);
             viewHolder.getDecrement().setVisibility(View.VISIBLE);
             viewHolder.getWorkDone().setVisibility(View.VISIBLE);
-            viewHolder.getWorkDone().setText(getWorkDoneMessage(note));
+            viewHolder.getWorkDone().setText(viewHolder.getWorkDoneMessage(note));
 //            viewHolder.getDecrement().setBackgroundColor(Color.parseColor("#0000ffff" ));
 //            viewHolder.getIncrement().setBackgroundColor(Color.parseColor("#0000ffff" ));
             viewHolder.getLinearLayout().setVisibility(View.VISIBLE);
@@ -199,14 +176,14 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         }
         if (note.isTaskCompleted()){
-            viewHolder.getDone().setEnabled(false);
+            viewHolder.getDoneButton().setEnabled(false);
 
 
 //            viewHolder.getDecrement().setImageAlpha(1);
 //            viewHolder.getIncrement().setImageAlpha(1);
             viewHolder.getIncrement().setEnabled(false);
             viewHolder.getDecrement().setEnabled(false);
-            viewHolder.getDone().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_on_secondary)));
+            viewHolder.getDoneButton().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_on_secondary)));
             viewHolder.getIncrement().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_on_secondary)));
             viewHolder.getDecrement().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_on_secondary)));
 
@@ -216,14 +193,18 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 //            viewHolder.getDecrement().se
 //            viewHolder.getIncrement().setImageAlpha(255);
 //            viewHolder.getIncrement().setImageAlpha(255);
-            viewHolder.getDone().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_secondary)));
+            viewHolder.getDoneButton().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_secondary)));
             viewHolder.getIncrement().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_secondary)));
             viewHolder.getDecrement().setStrokeColor(ColorStateList.valueOf(ContextCompat.getColor((MainActivity)clickListener, R.color.design_default_color_secondary)));
 
-            viewHolder.getDone().setEnabled(true);
+            viewHolder.getDoneButton().setEnabled(true);
             viewHolder.getIncrement().setEnabled(true);
             viewHolder.getDecrement().setEnabled(true);
         }
+
+        clickListener.setPriorityLabelImageView(viewHolder, position);
+
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -231,8 +212,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     public int getItemCount() {
         return localDataSet.size();
     }
+
     public interface ItemClickListener {
-        void onItemClick(View view, int position);
+        void onNoteCompleteClick(View view, int position);
+        void onIncrementClick(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
+        void onDecrementClick(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
+        void onClickDone(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
+        void setPriorityLabelImageView(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
     }
     public interface ConfettiDisplayable {
         void displayConfetti();

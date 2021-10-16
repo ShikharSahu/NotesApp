@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -18,21 +20,36 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class DisplayNote extends AppCompatActivity {
 
 
     private TextInputEditText title, description, taskDone, totalTask;
     private SwitchMaterial hasProgressSwitch;
-    MaterialButton createNote;
+    private MaterialButton createNote;
     private boolean hasProgress = true;
-    private TextInputLayout taskDoneLayout, totalTaskLayout;
+    private TextInputLayout taskDoneLayout, totalTaskLayout, descriptionLayout;
+    private AutoCompleteTextView autoCompleteTextView;
+    private TextInputLayout priorityMenuLayout;
     int indexToReplace = 0 ;
+    private FloatingActionButton makeEditableButton;
+    private ArrayAdapter<String> priorityDropDownAdapter;
+    private final String[] priorityDDOptions = new String[]{"High","Mid","Low","No"};
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    protected void onStop() {
+        super.onStop();
+        makeEditableButton.setImageDrawable(getDrawable(R.drawable.ic_baseline_edit_24));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +58,7 @@ public class DisplayNote extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             customizeActionBarLook();
+
         }
 
         title = findViewById(R.id.titleNoteETDisplay1);
@@ -51,6 +69,31 @@ public class DisplayNote extends AppCompatActivity {
         createNote = findViewById(R.id.createNoteButtonDisplay1);
         totalTaskLayout = findViewById(R.id.totalTaskNoteLytDisplay1);
         taskDoneLayout = findViewById(R.id.taskDoneLayoutDisplay1);
+        autoCompleteTextView = findViewById(R.id.priorityCreateDropDownDisplay1);
+        priorityMenuLayout = findViewById(R.id.textFieldDisplay1);
+        makeEditableButton = findViewById(R.id.fabEdit);
+        descriptionLayout = findViewById(R.id.descriptionNoteLytDisplay1);
+
+        makeEditableButton.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                if(!title.isEnabled()){
+                    enableAllViews(true);
+
+//                    autoCompleteTextView.setText("");
+//                    priorityDropDownAdapter.notifyDataSetChanged();
+
+                    makeEditableButton.setImageDrawable(getDrawable(R.drawable.tick_mark));
+                }
+                else{
+                    createNote.performClick();
+
+                }
+            }
+        });
+
+
 
         Intent intent = getIntent();
         Note receivedNote = (Note) intent.getSerializableExtra(MainActivity.NOTE_TO_EDIT_EXTRA_SEND);
@@ -65,12 +108,38 @@ public class DisplayNote extends AppCompatActivity {
         hasProgress = receivedNote.hasProgress;
         hasProgressSwitch.setChecked(hasProgress);
 
+
         title.setText(receivedNote.title);
         if (receivedNote.description != null ) description.setText(receivedNote.description);
         if(hasProgress){
             taskDone.setText(""+receivedNote.tasksDone);
             totalTask.setText(""+receivedNote.maxTask);
         }
+
+
+        priorityDropDownAdapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, priorityDDOptions);
+        autoCompleteTextView.setAdapter(priorityDropDownAdapter);
+
+
+        switch (receivedNote.priority){
+            case Note.MAX_PRIORITY:{
+                autoCompleteTextView.setText("High");
+                break;
+            }
+            case Note.MID_PRIORITY:{
+                autoCompleteTextView.setText("Mid");
+                break;
+            }
+            case Note.MIN_PRIORITY:{
+                autoCompleteTextView.setText("Low");
+                break;
+            }
+            case Note.NO_PRIORITY:{
+                autoCompleteTextView.setText("No");
+                break;
+            }
+        }
+
 
 
 
@@ -117,7 +186,6 @@ public class DisplayNote extends AppCompatActivity {
                     textInputEditText.setError(null);
                 }
             }
-
         };
         Log.d("mee","avove create note");
 
@@ -132,6 +200,12 @@ public class DisplayNote extends AppCompatActivity {
                 if(TextUtils.isEmpty(title.getText())){
                     proceed = false;
                     title.setError("Error");
+                }
+                if(!TextUtils.isEmpty(autoCompleteTextView.getText())){
+                    autoCompleteTextView.setError(null);
+                }else{
+                    proceed = false;
+                    autoCompleteTextView.setError("Error");
                 }
                 if(hasProgress){
                     if (TextUtils.isEmpty(totalTask.getText())) {
@@ -155,13 +229,34 @@ public class DisplayNote extends AppCompatActivity {
 
                     String titleStr = title.getText().toString();
                     String descriptionStr = description.getText().toString();
+                    String priorityLabelString = autoCompleteTextView.getText().toString();
+
+                    int priorityValueInInt = 0;
+                    switch (priorityLabelString){
+                        case "High": {
+                            priorityValueInInt = Note.MAX_PRIORITY;
+                            break;
+                        }
+                        case "Mid": {
+                            priorityValueInInt = Note.MID_PRIORITY;
+                            break;
+                        }
+                        case "Low": {
+                            priorityValueInInt = Note.MIN_PRIORITY;
+                            break;
+                        }
+                        case "No": {
+                            priorityValueInInt = Note.NO_PRIORITY;
+                            break;
+                        }
+                    }
 
                     int td = 0, tt= 0;
                     if(hasProgress) {
                         td = Integer.parseInt(taskDone.getText().toString());
                         tt = Integer.parseInt(totalTask.getText().toString());
                     }
-                    Note note = new Note(titleStr,descriptionStr,hasProgress,td,tt);
+                    Note note = new Note(titleStr,descriptionStr,hasProgress,td,tt, priorityValueInInt);
                     Intent output = new Intent();
                     output.putExtra(MainActivity.NOTE_TO_EDIT_EXTRA_RECEIVE, (Serializable) note);
                     output.putExtra(MainActivity.INDEX_TO_REPLACE_EXTRA, indexToReplace);
@@ -171,10 +266,42 @@ public class DisplayNote extends AppCompatActivity {
             }
         });
 
+        enableAllViews(false);
 
 
+    }
+    private void enableAllViews(boolean enable){
+        title.setEnabled(enable);
+        description.setEnabled(enable);
+        taskDone.setEnabled(enable);
+        totalTask.setEnabled(enable);
+        hasProgressSwitch.setEnabled(enable);
+        autoCompleteTextView.setEnabled(enable);
+        createNote.setEnabled(enable);
+//        if(enable) autoCompleteTextView.setThreshold(10);
+//        else autoCompleteTextView.setThreshold(0);
+        if(!enable){
 
+            createNote.setVisibility(View.GONE);
+            if (Objects.requireNonNull(description.getText()).toString().equals("")) {
+//                description.setVisibility(View.GONE);
+                descriptionLayout.setVisibility(View.GONE);
+            }
+            autoCompleteTextView.setThreshold(10);
 
+            if (!hasProgressSwitch.isChecked()) {
+                taskDoneLayout.setVisibility(View.GONE);
+                totalTaskLayout.setVisibility(View.GONE);
+            }
+        }
+        else {
+            createNote.setVisibility(View.VISIBLE);
+            autoCompleteTextView.setThreshold(0);
+            descriptionLayout.setVisibility(View.VISIBLE);
+//            description.setVisibility(View.VISIBLE);
+            taskDoneLayout.setVisibility(View.VISIBLE);
+            totalTaskLayout.setVisibility(View.VISIBLE);
+        }
 
     }
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

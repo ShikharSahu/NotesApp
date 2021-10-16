@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -30,9 +32,12 @@ public class CreateNote extends AppCompatActivity {
 
     private TextInputEditText title, description, taskDone, totalTask;
     private SwitchMaterial hasProgressSwitch;
-    MaterialButton createNote;
+    private MaterialButton createNote;
     private boolean hasProgress = true;
     private TextInputLayout taskDoneLayout, totalTaskLayout;
+    private AutoCompleteTextView autoCompleteTextView;
+    private boolean proceed = true;
+//    private ShapeableImageView priorityLabel;
 
 
     @Override
@@ -52,8 +57,16 @@ public class CreateNote extends AppCompatActivity {
         createNote = findViewById(R.id.createNoteButton);
         totalTaskLayout = findViewById(R.id.totalTaskNoteLyt);
         taskDoneLayout = findViewById(R.id.taskDoneLayout);
+        autoCompleteTextView = findViewById(R.id.priorityCreateDropDown);
 
         Log.d("mee","allfinds");
+
+        String[] priorityDDOptions = new String[]{"High","Mid","Low","No"};
+
+        ArrayAdapter<String> priorityDropDownAdapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, priorityDDOptions);
+        autoCompleteTextView.setAdapter(priorityDropDownAdapter);
+
+
         hasProgressSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -69,6 +82,7 @@ public class CreateNote extends AppCompatActivity {
                 }
             }
         });
+
 
         title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -107,11 +121,21 @@ public class CreateNote extends AppCompatActivity {
         createNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean proceed = true;
+                proceed = true;
+
+                Log.d("hehe","autocomp   "+ autoCompleteTextView.getText());
+
                 if(TextUtils.isEmpty(title.getText())){
                     proceed = false;
                     title.setError("Error");
                 }
+//                if(!TextUtils.isEmpty(autoCompleteTextView.getText())){
+//                    autoCompleteTextView.setError(null);
+//                }else{
+//                    proceed = false;
+//                    autoCompleteTextView.setError("Error");
+//                }
+
                 if(hasProgress){
                     if (TextUtils.isEmpty(totalTask.getText())) {
                         proceed = false;
@@ -131,16 +155,31 @@ public class CreateNote extends AppCompatActivity {
                     }
                 }
                 if(proceed){
-
                     String titleStr = title.getText().toString();
                     String descriptionStr = description.getText().toString();
+                    String priorityLabelString = autoCompleteTextView.getText().toString();
 
+                    int priorityValueInInt = 0;
+                    switch (priorityLabelString){
+                        case "High": {
+                            priorityValueInInt = Note.MAX_PRIORITY;
+                            break;
+                        }
+                        case "Mid": {
+                            priorityValueInInt = Note.MID_PRIORITY;
+                            break;
+                        }
+                        case "Low":{
+                            priorityValueInInt = Note.MIN_PRIORITY;
+                            break;
+                        }
+                    }
                     int td = 0, tt= 0;
                     if(hasProgress) {
                         td = Integer.parseInt(taskDone.getText().toString());
                         tt = Integer.parseInt(totalTask.getText().toString());
                     }
-                    Note note = new Note(titleStr,descriptionStr,hasProgress,td,tt);
+                    Note note = new Note(titleStr,descriptionStr,hasProgress,td,tt, priorityValueInInt);
                     Intent output = new Intent();
                     output.putExtra(MainActivity.NOTE_TO_CREATE_EXTRA,(Serializable) note);
                     setResult(RESULT_OK,output);
