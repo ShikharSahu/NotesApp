@@ -83,7 +83,6 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/totalTaskNoteLytDisplay1"
-                app:boxStrokeColor="@color/design_default_color_secondary"
                 style="@style/MyTextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -108,6 +107,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/taskDoneLayoutDisplay1"
                 style="@style/MyTextInputLayout"
+
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:endIconMode="clear_text"

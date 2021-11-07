@@ -23,19 +23,8 @@
         <item name="android:textCursorDrawable">@drawable/color_cursor</item>
         <item name="colorPrimary">@color/design_default_color_secondary</item>
         <item name="boxStrokeColor">@color/edit_text_box_border</item>
-
-
     </style>
-<!--<item name="android:textColorHint">@color/design_default_color_secondary</item>
-        <item name="android:paddingStart">5dp</item>
-        <item name="android:paddingEnd">5dp</item>
-        <item name="boxStrokeColor">@color/edit_text_box_border</item>
-        <item name="colorControlActivated">@color/design_default_color_secondary</item>
-        <item name="colorPrimary">@color/design_default_color_secondary</item>-->
-<!--    <style name="MyTextInputEditText" parent="ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox.Dense">-->
-<!--&lt;!&ndash;        <item name="android:textColor">@color/black</item>&ndash;&gt;-->
-<!--        <item name="android:textCursorDrawable">@drawable/color_cursor</item>-->
-<!--    </style>-->
+
     <style name="Widget.App.Button.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -64,6 +53,7 @@
 <!--        <item name="colorSurface">@color/design_default_color_secondary</item>-->
 <!--        <item name="iconTint">@color/design_default_color_secondary</item>-->
     </style>
+
     <style name="Widget.App.Button.IconOnly1" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -73,8 +63,8 @@
         <item name="android:minWidth">48dp</item>
         <item name="android:minHeight">48dp</item>
         <item name="materialThemeOverlay">@style/TealThemeOverlay</item>
-
     </style>
+
     <style name="Widget.App.Button.IconOnlyFilled" parent="Widget.MaterialComponents.Button">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>
@@ -103,5 +93,13 @@
         <item name="colorPrimary">@color/design_default_color_secondary</item>
     </style>
 
+    <style name="TextBoxForError" parent="Widget.AppCompat.TextView">
+        <item name="colorPrimary">@color/teal_200</item>
+        <item name="colorOnSurface">@color/teal_200</item>
+        <item name="boxStrokeColor">@color/teal_200</item>
+        <item name="colorSurface">@color/teal_200</item>
+        <item name="colorPrimaryDark">@color/teal_200</item>
+        <item name="android:textColor">@color/teal_200</item>
+    </style>
 
 </resources>

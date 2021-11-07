@@ -1,23 +1,17 @@
 package com.example.notesapp;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,11 +50,6 @@ public class DisplayNote extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_note);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            customizeActionBarLook();
-
-        }
-
         title = findViewById(R.id.titleNoteETDisplay1);
         description = findViewById(R.id.descriptionNoteEtDisplay1);
         taskDone = findViewById(R.id.tasksDoneETDisplay1);
@@ -78,27 +67,23 @@ public class DisplayNote extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                if(!title.isEnabled()){
+                if(!title.isFocusable()){
                     enableAllViews(true);
-
 //                    autoCompleteTextView.setText("");
 //                    priorityDropDownAdapter.notifyDataSetChanged();
 
-                    makeEditableButton.setImageDrawable(getDrawable(R.drawable.tick_mark));
+                    makeEditableButton.setImageDrawable(getDrawable(R.drawable.tick_mark_icon));
                 }
                 else{
                     createNote.performClick();
-
                 }
             }
         });
 
-
-
         Intent intent = getIntent();
         Note receivedNote = (Note) intent.getSerializableExtra(MainActivity.NOTE_TO_EDIT_EXTRA_SEND);
         indexToReplace = intent.getIntExtra(MainActivity.INDEX_TO_REPLACE_EXTRA,12);
-        Log.d("mee",indexToReplace+" indextr");
+//        Log.d("mee",indexToReplace+" indextr");
         if(receivedNote == null){
             Toast.makeText(this, "Error, note not found", Toast.LENGTH_SHORT).show();
             setResult(RESULT_CANCELED,new Intent());
@@ -108,7 +93,6 @@ public class DisplayNote extends AppCompatActivity {
         hasProgress = receivedNote.hasProgress;
         hasProgressSwitch.setChecked(hasProgress);
 
-
         title.setText(receivedNote.title);
         if (receivedNote.description != null ) description.setText(receivedNote.description);
         if(hasProgress){
@@ -116,10 +100,8 @@ public class DisplayNote extends AppCompatActivity {
             totalTask.setText(""+receivedNote.maxTask);
         }
 
-
         priorityDropDownAdapter = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, priorityDDOptions);
         autoCompleteTextView.setAdapter(priorityDropDownAdapter);
-
 
         switch (receivedNote.priority){
             case Note.MAX_PRIORITY:{
@@ -140,10 +122,6 @@ public class DisplayNote extends AppCompatActivity {
             }
         }
 
-
-
-
-        Log.d("mee","allfinds");
         hasProgressSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -172,7 +150,6 @@ public class DisplayNote extends AppCompatActivity {
             }
         });
 
-
         View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -187,11 +164,23 @@ public class DisplayNote extends AppCompatActivity {
                 }
             }
         };
-        Log.d("mee","avove create note");
-
 
         totalTask.setOnFocusChangeListener(onFocusChangeListener);
         taskDone.setOnFocusChangeListener(onFocusChangeListener);
+
+//        autoCompleteTextView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                String previous = autoCompleteTextView.getText().toString();
+//                if(hasFocus) {
+//                    autoCompleteTextView.setText("");
+//                    autoCompleteTextView.showDropDown();
+//                }
+//                else {
+//                    autoCompleteTextView.setText(previous);
+//                }
+//            }
+//        });
 
         createNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +215,6 @@ public class DisplayNote extends AppCompatActivity {
                     }
                 }
                 if(proceed){
-
                     String titleStr = title.getText().toString();
                     String descriptionStr = description.getText().toString();
                     String priorityLabelString = autoCompleteTextView.getText().toString();
@@ -250,7 +238,6 @@ public class DisplayNote extends AppCompatActivity {
                             break;
                         }
                     }
-
                     int td = 0, tt= 0;
                     if(hasProgress) {
                         td = Integer.parseInt(taskDone.getText().toString());
@@ -265,23 +252,26 @@ public class DisplayNote extends AppCompatActivity {
                 }
             }
         });
-
         enableAllViews(false);
-
-
     }
+
     private void enableAllViews(boolean enable){
-        title.setEnabled(enable);
-        description.setEnabled(enable);
-        taskDone.setEnabled(enable);
-        totalTask.setEnabled(enable);
+        title.setFocusable(enable);
+        description.setFocusable(enable);
+        taskDone.setFocusable(enable);
+        totalTask.setFocusable(enable);
         hasProgressSwitch.setEnabled(enable);
-        autoCompleteTextView.setEnabled(enable);
+        autoCompleteTextView.setFocusable(enable);
         createNote.setEnabled(enable);
+        title.setFocusableInTouchMode(enable);
+        description.setFocusableInTouchMode(enable);
+        taskDone.setFocusableInTouchMode(enable);
+        totalTask.setFocusableInTouchMode(enable);
+        autoCompleteTextView.setFocusable(enable);
 //        if(enable) autoCompleteTextView.setThreshold(10);
 //        else autoCompleteTextView.setThreshold(0);
-        if(!enable){
 
+        if(!enable){
             createNote.setVisibility(View.GONE);
             if (Objects.requireNonNull(description.getText()).toString().equals("")) {
 //                description.setVisibility(View.GONE);
@@ -295,27 +285,17 @@ public class DisplayNote extends AppCompatActivity {
             }
         }
         else {
+
             createNote.setVisibility(View.VISIBLE);
             autoCompleteTextView.setThreshold(0);
+            String[] prioritiesArray = getResources().getStringArray(R.array.priorities);
+            ArrayAdapter<String> priorityDropDownAdapter1 = new ArrayAdapter<>(this,R.layout.support_simple_spinner_dropdown_item, priorityDDOptions);
+            autoCompleteTextView.setAdapter(priorityDropDownAdapter1);
+
             descriptionLayout.setVisibility(View.VISIBLE);
 //            description.setVisibility(View.VISIBLE);
             taskDoneLayout.setVisibility(View.VISIBLE);
             totalTaskLayout.setVisibility(View.VISIBLE);
         }
-
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    void customizeActionBarLook(){
-
-        int color = ContextCompat.getColor(this, R.color.design_default_color_secondary);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(colorDrawable);
-        Window window = getWindow();
-
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.design_default_color_secondary))          ;
-    }
-
 }

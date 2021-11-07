@@ -4,15 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -20,9 +17,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +35,11 @@ import nl.dionsegijn.konfetti.models.Shape;
 import nl.dionsegijn.konfetti.models.Size;
 
 public class MainActivity extends AppCompatActivity implements NotesAdapter.ItemClickListener,
+        NotesAdapter.ItemTouchHelperAdapter,
         NotesAdapter.ConfettiDisplayable{
 
     private RecyclerView recyclerView;
+    private View emptyView1, emptyView2;
     private ArrayList<Note> noteArrayList;
     private KonfettiView konfettiView ;
     private NotesAdapter notesAdapter;
@@ -56,20 +54,25 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
     final static public String NOTE_TO_CREATE_EXTRA = "NOTE_TO_CREATE_EXTRA";
     final static public String nameForSharedPreferences = "nameForSharedPreference.NotesApp";
 
+    final static public String KEY_FOR_CHART_ARRAYLIST_IN_SERIALIZABLE = "NOTESAPP_ARRAYLIST_IN_SERIALIZABLE";
+    final static public String KEY_FOR_CHART_ARRAYLIST_IN_ARGS = "NOTESAPP_BUNDLE_WITH_THE_SERIALIZABLE_ARGS";
+
     private ActivityResultLauncher<Intent> addNoteActivityLauncher, editNoteActivityLauncher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            customizeActionBarLook();
-        }
 
 //        noteArrayList = new ArrayList<>();
         konfettiView = findViewById(R.id.viewKonfetti);
         floatingActionButton = findViewById(R.id.addNoteFab);
         noteArrayList = getArrayListFromSP();
+
+
+//        for(int i = 0 ; i < 25; i++){
+//            noteArrayList.add(new Note("Note: "+i,"long des", true,i,30,i%4));
+//        }
 
 
 //
@@ -89,11 +92,16 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
 //
 
 
+        emptyView1 = findViewById(R.id.empty_image);
+        emptyView2 = findViewById(R.id.emptyMessage);
+
         recyclerView = findViewById(R.id.recycler);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         notesAdapter = new NotesAdapter(this , noteArrayList);
         recyclerView.setAdapter(notesAdapter);
+
+        setEmptyViewOnOff();
 
         addNoteActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
                     dirtiedNotes = true;
                     Note newNote = (Note) bundle.get(NOTE_TO_CREATE_EXTRA);
                     noteArrayList.add(0,newNote);
-                    notesAdapter.notifyItemInserted(0);
+                    notesAdapter.notifyAdapterItemInserted(0);
                     recyclerView.scrollToPosition(0);
                 }
             }
@@ -118,38 +126,12 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
                     Note newNote = (Note) bundle.get(NOTE_TO_EDIT_EXTRA_RECEIVE);
                     int pos = bundle.getInt(INDEX_TO_REPLACE_EXTRA,0);
                     noteArrayList.set(pos,newNote);
-                    notesAdapter.notifyItemChanged(pos);
+                    notesAdapter.notifyAdapterItemChanged(pos);
                     recyclerView.scrollToPosition(0);
                 }
             }
         });
 
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback
-                = new ItemTouchHelper.
-                SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
-                | ItemTouchHelper.DOWN | ItemTouchHelper.UP) {
-
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                //Toast.makeText(getBaseContext(), "on Move", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                //Remove swiped item from list and notify the RecyclerView
-                int position = viewHolder.getAdapterPosition();
-                noteArrayList.remove(position);
-                Toast.makeText(getBaseContext(), "Note on position "+ position+" deleted",
-                        Toast.LENGTH_SHORT).show();
-
-                notesAdapter.notifyItemRemoved(position);
-                dirtiedNotes= true;
-
-            }
-        };
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,6 +139,11 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
                 addANoteAndLaunchActivity();
             }
         });
+
+        ItemTouchHelper.Callback callback = new NotesAdapterItemTouchHelperSwipeMove(this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+        notesAdapter.setItemTouchHelper(itemTouchHelper);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
 //        DividerItemDecoration mDividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),((LinearLayoutManager)layoutManager).getOrientation());
 //        recyclerView.addItemDecoration(mDividerItemDecoration);
 //
@@ -167,22 +154,31 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         getMenuInflater().inflate(R.menu.add_task_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.addNote) {// User chose the "Settings" item, show the app settings UI...
+        if (item.getItemId() == R.id.addNoteMenuOption) {
             addANoteAndLaunchActivity();
             return true;
         }
-        if (item.getItemId() == R.id.sortByDateAdded) {// User chose the "Settings" item, show the app settings UI...
+        if (item.getItemId() == R.id.showChartMenuOption){
+            Intent intent = new Intent(this, DisplayChart.class);
+            Bundle args = new Bundle();
+            args.putSerializable(KEY_FOR_CHART_ARRAYLIST_IN_SERIALIZABLE,(Serializable)noteArrayList);
+            intent.putExtra(KEY_FOR_CHART_ARRAYLIST_IN_ARGS,args);
+            startActivity(intent);
+            return true;
+        }
+        if (item.getItemId() == R.id.sortByDateAdded) {
             noteArrayList.sort((p1, p2) -> p2.timeCreated.compareTo(p1.timeCreated));
-            notesAdapter.notifyDataSetChanged();
+            notesAdapter.notifyAdapterDataSetChanged();
             dirtiedNotes = true;
             return true;
         }
-        if (item.getItemId() == R.id.sortByPriority) {// User chose the "Settings" item, show the app settings UI...
+        if (item.getItemId() == R.id.sortByPriority) {
             noteArrayList.sort((p1, p2) -> (p2.priority-p1.priority)==0?p2.timeCreated.compareTo(p1.timeCreated):(p2.priority-p1.priority));
-            notesAdapter.notifyDataSetChanged();
+            notesAdapter.notifyAdapterDataSetChanged();
             dirtiedNotes = true;
             return true;
         }
@@ -215,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         if(currentNote.hasProgress && currentNote.tasksDone>= currentNote.maxTask){
             startTaskDoneEvent();
             currentNote.isDone= true;
-            notesAdapter.notifyItemChanged(position);
+            notesAdapter.notifyAdapterItemChanged(position);
         }
 
 
@@ -243,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
                 currentNote.tasksDone = currentNote.maxTask;
             }
             currentNote.isDone = true;
-            notesAdapter.notifyItemChanged(position);
+            notesAdapter.notifyAdapterItemChanged(position);
             dirtiedNotes = true;
         }
     }
@@ -278,6 +274,21 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         Drawable labelImageViewDrawable = getResources().getDrawable(getResources()
                 .getIdentifier(pLabelName, "drawable", getPackageName()));
         currentViewHolderInFocus.getPriorityLabel().setImageDrawable(labelImageViewDrawable);
+    }
+
+    @Override
+    public void setEmptyViewOnOff() {
+        if(notesAdapter.getItemCount()==0){
+//            Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+            emptyView1.setVisibility(View.VISIBLE);
+            emptyView2.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+        }
+        else{
+            emptyView1.setVisibility(View.GONE);
+            emptyView2.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -321,19 +332,6 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         editor.apply();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    void customizeActionBarLook(){
-        int color = ContextCompat.getColor(this, R.color.design_default_color_secondary);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(colorDrawable);
-        Window window = getWindow();
-
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.design_default_color_secondary))          ;
-    }
-
     private void startTaskDoneEvent(){
         displayConfetti();
     }
@@ -342,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
     public void displayConfetti() {
 
         konfettiView.build()
-                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA, Color.RED)
                 .setDirection(0.0, 359.0)
                 .setSpeed(1f, 5f)
                 .setFadeOutEnabled(true)
@@ -351,5 +349,20 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
                 .addSizes(new Size(12, 5f))
                 .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                 .streamFor(300, 5000L);
+    }
+
+    @Override
+    public void onItemMove(int fromPosition, int toPosition) {
+        Note fromElement = noteArrayList.get(fromPosition);
+        noteArrayList.remove(fromPosition);
+        noteArrayList.add(toPosition,fromElement);
+        notesAdapter.notifyAdapterItemMoved(fromPosition,toPosition);
+    }
+
+    @Override
+    public void onItemSwiped(int position) {
+        noteArrayList.remove(position);
+        notesAdapter.notifyAdapterItemRemoved(position);
+        Toast.makeText(this, "Item Deleted!", Toast.LENGTH_SHORT).show();
     }
 }
