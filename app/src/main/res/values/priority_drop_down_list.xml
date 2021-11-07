@@ -4,5 +4,6 @@
         <item>High</item>
         <item>Mid</item>
         <item>Low</item>
+        <item>No</item>
     </string-array>
 </resources>

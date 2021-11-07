@@ -12,14 +12,42 @@
         android:layout_height="match_parent"
         android:elevation="20dp"/>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/empty_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:alpha="0.7"
+        android:src="@drawable/empty_box_teal"
+        app:layout_constraintBottom_toBottomOf="@+id/viewKonfetti"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/emptyMessage"
+        style="@style/TextBoxForError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:alpha="0.7"
+        android:text="Nothing here!"
+        android:textColor="@color/teal_200"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/empty_image" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addNoteFab"
@@ -29,7 +57,7 @@
         android:layout_margin="16dp"
         android:layout_marginBottom="30dp"
         android:contentDescription="add"
-        android:src="@drawable/plus_add_draw"
+        app:srcCompat="@drawable/plus_add_draw_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

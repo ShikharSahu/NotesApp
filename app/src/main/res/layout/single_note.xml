@@ -100,7 +100,7 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
-                app:icon="@drawable/tick_mark"
+                app:icon="@drawable/tick_mark_icon"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:layout_constraintEnd_toEndOf="parent"

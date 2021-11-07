@@ -1,24 +1,15 @@
-
 package com.example.notesapp;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -27,8 +18,8 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.Serializable;
 
-public class CreateNote extends AppCompatActivity {
 
+public class CreateNote extends AppCompatActivity {
 
     private TextInputEditText title, description, taskDone, totalTask;
     private SwitchMaterial hasProgressSwitch;
@@ -37,17 +28,11 @@ public class CreateNote extends AppCompatActivity {
     private TextInputLayout taskDoneLayout, totalTaskLayout;
     private AutoCompleteTextView autoCompleteTextView;
     private boolean proceed = true;
-//    private ShapeableImageView priorityLabel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            customizeActionBarLook();
-        }
 
         title = findViewById(R.id.titleNoteET);
         description = findViewById(R.id.descriptionNoteEt);
@@ -59,7 +44,6 @@ public class CreateNote extends AppCompatActivity {
         taskDoneLayout = findViewById(R.id.taskDoneLayout);
         autoCompleteTextView = findViewById(R.id.priorityCreateDropDown);
 
-        Log.d("mee","allfinds");
 
         String[] priorityDDOptions = new String[]{"High","Mid","Low","No"};
 
@@ -83,7 +67,6 @@ public class CreateNote extends AppCompatActivity {
             }
         });
 
-
         title.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -95,7 +78,6 @@ public class CreateNote extends AppCompatActivity {
                 }
             }
         });
-
 
         View.OnFocusChangeListener onFocusChangeListener = new View.OnFocusChangeListener() {
             @Override
@@ -112,8 +94,6 @@ public class CreateNote extends AppCompatActivity {
             }
 
         };
-        Log.d("mee","avove create note");
-
 
         totalTask.setOnFocusChangeListener(onFocusChangeListener);
         taskDone.setOnFocusChangeListener(onFocusChangeListener);
@@ -123,7 +103,7 @@ public class CreateNote extends AppCompatActivity {
             public void onClick(View v) {
                 proceed = true;
 
-                Log.d("hehe","autocomp   "+ autoCompleteTextView.getText());
+               // Log.d("hehe","autocomp   "+ autoCompleteTextView.getText());
 
                 if(TextUtils.isEmpty(title.getText())){
                     proceed = false;
@@ -187,25 +167,5 @@ public class CreateNote extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
-
-
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    void customizeActionBarLook(){
-
-        int color = ContextCompat.getColor(this, R.color.design_default_color_secondary);
-        ColorDrawable colorDrawable = new ColorDrawable(color);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(colorDrawable);
-        Window window = getWindow();
-
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.design_default_color_secondary))          ;
-    }
-
 }

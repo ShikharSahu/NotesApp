@@ -1,13 +1,16 @@
 package com.example.notesapp;
 
 import android.content.res.ColorStateList;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
@@ -22,8 +25,38 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     private final ArrayList<Note> localDataSet;
     private final ItemClickListener clickListener;
+    private ItemTouchHelper itemTouchHelper;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public void notifyAdapterItemInserted(int position) {
+        notifyItemInserted(position);
+        clickListener.setEmptyViewOnOff();
+    }
+
+    public void notifyAdapterItemChanged(int position) {
+        notifyItemChanged(position);
+        clickListener.setEmptyViewOnOff();
+    }
+
+    public void notifyAdapterItemMoved(int to, int from){
+        notifyItemMoved(to, from);
+    }
+
+    public void notifyAdapterItemRemoved(int position) {
+        notifyItemRemoved(position);
+        clickListener.setEmptyViewOnOff();
+    }
+
+    public void notifyAdapterDataSetChanged() {
+        notifyDataSetChanged();
+        clickListener.setEmptyViewOnOff();
+    }
+
+    public void setItemTouchHelper(ItemTouchHelper itemTouchHelper) {
+        this.itemTouchHelper = itemTouchHelper;
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements
+        View.OnTouchListener, GestureDetector.OnGestureListener {
 
         private final MaterialTextView title;
         private final MaterialTextView description;
@@ -35,9 +68,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         private final LinearLayout linearLayout;
         private final ShapeableImageView priorityLabel;
         private final MaterialCardView noteCardView;
+        private final GestureDetector gestureDetector;
+        private final View completeView;
 
         public ViewHolder(View view) {
             super(view);
+            completeView = view;
             title = view.findViewById(R.id.titleNoteCard1);
             description = view.findViewById(R.id.DescriptionNoteCard1);
             workDone = view.findViewById(R.id.workDoneCard1);
@@ -49,12 +85,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             noteCardView = view.findViewById(R.id.NoteCardMaterial);
             priorityLabel = view.findViewById(R.id.priorityLabel);
 
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickListener.onNoteCompleteClick(view, getLayoutPosition());
-                }
-            });
+            gestureDetector = new GestureDetector(view.getContext(), this);
+
+
+
+            view.setOnTouchListener(this::onTouch);
+//            view.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    clickListener.onNoteCompleteClick(view, getLayoutPosition());
+//                }
+//            });
 
 
             increment.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +105,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 }
             });
 
-//            clickListener.;
             decrement.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -124,6 +164,42 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             return priorityLabel;
         }
 
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            clickListener.onNoteCompleteClick(completeView, getLayoutPosition());
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            itemTouchHelper.startDrag(this);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            gestureDetector.onTouchEvent(event);
+            return true;
+        }
     }
 
 
@@ -213,12 +289,17 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         return localDataSet.size();
     }
 
+    public interface ItemTouchHelperAdapter{
+        void onItemMove(int fromPosition, int toPosition);
+        void onItemSwiped(int position);
+    }
     public interface ItemClickListener {
         void onNoteCompleteClick(View view, int position);
         void onIncrementClick(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
         void onDecrementClick(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
         void onClickDone(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
         void setPriorityLabelImageView(NotesAdapter.ViewHolder currentViewHolderInFocus, int position);
+        void setEmptyViewOnOff();
     }
     public interface ConfettiDisplayable {
         void displayConfetti();

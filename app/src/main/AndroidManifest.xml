@@ -15,6 +15,9 @@
         <activity android:name=".CreateNote"
             android:label="add Note"
             android:parentActivityName=".MainActivity"/>
+        <activity android:name=".DisplayChart"
+            android:label="Pie Chart"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

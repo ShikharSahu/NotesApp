@@ -3,11 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/addNote"
-        android:icon="@drawable/plus_add_draw"
-        android:title="add new notes"
+        android:id="@+id/addNoteMenuOption"
+        android:icon="@drawable/plus_add_draw_icon"
+        android:title="add a new note"
         android:iconTint="@color/white"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/showChartMenuOption"
+        android:icon="@drawable/pie_chart_icon_menu"
+        android:title="Open Pie Chart"
+        android:iconTint="@color/white"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/sortByDateAdded"
         android:title="sort by Date Added"

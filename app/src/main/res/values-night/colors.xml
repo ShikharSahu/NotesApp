@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="red">#FF1744</color>
+    <color name="priority_red">#B71C1C</color>
+    <color name="priority_yellow">#FDD835</color>
+    <color name="priority_green">#43A047</color>
+    <color name="background_for_hole_pie_chart">#000000</color>
+    <color name="opposite_to_theme">#FFFFFF</color>
+
 
 </resources>
