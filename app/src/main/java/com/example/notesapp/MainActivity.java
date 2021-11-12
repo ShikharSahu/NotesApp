@@ -103,7 +103,8 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
 
         setEmptyViewOnOff();
 
-        addNoteActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        addNoteActivityLauncher = registerForActivityResult(new ActivityResultContracts
+                .StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if(result.getResultCode()== RESULT_OK && result.getData() != null){
@@ -117,7 +118,8 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
             }
         });
 
-        editNoteActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        editNoteActivityLauncher = registerForActivityResult(new ActivityResultContracts.
+                StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if(result.getResultCode()== RESULT_OK && result.getData() != null){
@@ -140,7 +142,8 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
             }
         });
 
-        ItemTouchHelper.Callback callback = new NotesAdapterItemTouchHelperSwipeMove(this);
+        ItemTouchHelper.Callback callback =
+                new NotesAdapterItemTouchHelperSwipeMove(this);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         notesAdapter.setItemTouchHelper(itemTouchHelper);
         itemTouchHelper.attachToRecyclerView(recyclerView);
@@ -165,9 +168,11 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         if (item.getItemId() == R.id.showChartMenuOption){
             Intent intent = new Intent(this, DisplayChart.class);
             Bundle args = new Bundle();
-            args.putSerializable(KEY_FOR_CHART_ARRAYLIST_IN_SERIALIZABLE,(Serializable)noteArrayList);
+            args.putSerializable(KEY_FOR_CHART_ARRAYLIST_IN_SERIALIZABLE,
+                    (Serializable)noteArrayList);
             intent.putExtra(KEY_FOR_CHART_ARRAYLIST_IN_ARGS,args);
             startActivity(intent);
+            saveToSharedPreferencesIfNotesDirtied();
             return true;
         }
         if (item.getItemId() == R.id.sortByDateAdded) {
@@ -177,7 +182,8 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
             return true;
         }
         if (item.getItemId() == R.id.sortByPriority) {
-            noteArrayList.sort((p1, p2) -> (p2.priority-p1.priority)==0?p2.timeCreated.compareTo(p1.timeCreated):(p2.priority-p1.priority));
+            noteArrayList.sort((p1, p2) -> (p2.priority-p1.priority)==0?p2.timeCreated
+                    .compareTo(p1.timeCreated):(p2.priority-p1.priority));
             notesAdapter.notifyAdapterDataSetChanged();
             dirtiedNotes = true;
             return true;
@@ -223,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         Note currentNote = noteArrayList.get(position);
         if (currentNote.decrementTask()) {
             currentViewHolderInFocus.getWorkDone()
-                    .setText(currentViewHolderInFocus.getWorkDoneMessage(currentNote));;
+                    .setText(currentViewHolderInFocus.getWorkDoneMessage(currentNote));
             currentViewHolderInFocus.getProgressBar().setProgress(currentNote.tasksDone);
             dirtiedNotes = true;
         }
@@ -245,7 +251,8 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
     }
 
     @Override
-    public void setPriorityLabelImageView(NotesAdapter.ViewHolder currentViewHolderInFocus, int position) {
+    public void setPriorityLabelImageView(NotesAdapter.ViewHolder currentViewHolderInFocus,
+                                          int position) {
         Note currentNote = noteArrayList.get(position);
         String pLabelName ;
 
@@ -293,24 +300,23 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
 
 
     public ArrayList<Note> getArrayListFromSP(){
-        SharedPreferences sharedPreferences = getSharedPreferences(nameForSharedPreferences, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(nameForSharedPreferences,
+                Context.MODE_PRIVATE);
 
         Gson gson = new Gson();
         String response=sharedPreferences.getString(keyToStoreStuffInSharedPreferences, "");
         if (response.equals("")){
             return new ArrayList<>();
         }
-        ArrayList<Note> lstArrayList = gson.fromJson(response, new TypeToken<List<Note>>(){}.getType());
+        ArrayList<Note> lstArrayList =
+                gson.fromJson(response, new TypeToken<List<Note>>(){}.getType());
         return lstArrayList;
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(dirtiedNotes){
-            saveToSP(noteArrayList);
-            dirtiedNotes = false;
-        }
+        saveToSharedPreferencesIfNotesDirtied();
 
     }
 
@@ -357,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         noteArrayList.remove(fromPosition);
         noteArrayList.add(toPosition,fromElement);
         notesAdapter.notifyAdapterItemMoved(fromPosition,toPosition);
+        dirtiedNotes = true;
     }
 
     @Override
@@ -364,5 +371,13 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
         noteArrayList.remove(position);
         notesAdapter.notifyAdapterItemRemoved(position);
         Toast.makeText(this, "Item Deleted!", Toast.LENGTH_SHORT).show();
+        dirtiedNotes = true;
+    }
+
+    private void saveToSharedPreferencesIfNotesDirtied(){
+        if(dirtiedNotes){
+            saveToSP(noteArrayList);
+            dirtiedNotes = false;
+        }
     }
 }
