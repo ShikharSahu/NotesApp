@@ -5,8 +5,8 @@
 - Swipe to delete, and the feature to undo deletion
 - Interactable note-cards
 - Move and reposition the notes by holding and dragging the card
-- Visualize the number of notes grouped by their priority with a dougnut chart
-- Confetti whenever a task gets completed
+- Visualize the number of notes grouped by their priority with a doughnut chart
+- Confetti shower whenever a task gets completed
 
 
 # NotesApp
