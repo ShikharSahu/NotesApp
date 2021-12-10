@@ -27,7 +27,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="6dp"
                 android:text="Title"
-                android:textSize="28sp"
+                android:textSize="22dp"
                 app:layout_constraintEnd_toStartOf="@+id/workDoneButtonCard1"
                 app:layout_constraintStart_toEndOf="@+id/priorityLabel"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -50,7 +50,7 @@
                 android:id="@+id/progressBarCard1"
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="10dp"
                 android:layout_marginLeft="6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginRight="6dp"
@@ -96,8 +96,8 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/workDoneButtonCard1"
                 style="@style/Widget.App.Button.IconOnly"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
                 app:icon="@drawable/tick_mark_icon"
@@ -116,7 +116,7 @@
             <LinearLayout
                 android:id="@+id/linearLCard1"
                 android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:orientation="horizontal"
                 android:weightSum="2"
@@ -128,8 +128,8 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/incCard1"
                     style="@style/Widget.App.Button.IconOnly1"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginRight="2dp"
                     android:layout_weight="1"
                     app:icon="@drawable/ic_baseline_keyboard_arrow_up_24" />
@@ -137,8 +137,8 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/decCard1"
                     style="@style/Widget.App.Button.IconOnly1"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:layout_marginLeft="2dp"
                     android:layout_marginRight="3dp"
                     android:layout_weight="1"
@@ -147,8 +147,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/priorityLabel"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_marginLeft="6dp"
                 app:layout_constraintBottom_toTopOf="@+id/DescriptionNoteCard1"
                 app:layout_constraintStart_toStartOf="parent"

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -368,9 +370,21 @@ public class MainActivity extends AppCompatActivity implements NotesAdapter.Item
 
     @Override
     public void onItemSwiped(int position) {
-        noteArrayList.remove(position);
+        Note removedNote = noteArrayList.remove(position);
         notesAdapter.notifyAdapterItemRemoved(position);
-        Toast.makeText(this, "Item Deleted!", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "Item Deleted!", Toast.LENGTH_SHORT).show();
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        Snackbar.make(viewGroup , "Note deleted!", Snackbar.LENGTH_LONG)
+            .setAction("UNDO", new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    noteArrayList.add(position, removedNote);
+                    notesAdapter.notifyAdapterItemInserted(position);
+                    recyclerView.scrollToPosition(position);
+                }
+            })
+            .show();
         dirtiedNotes = true;
     }
 
